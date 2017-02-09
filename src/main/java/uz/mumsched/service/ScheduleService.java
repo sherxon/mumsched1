@@ -37,10 +37,13 @@ public class ScheduleService {
     public List<Section> generate(Entry entry){
         List<Section> list=new ArrayList<>();
         List<Block> blocks=new ArrayList<>(entry.getBlocks());
-        int activeStudentCount=studentService.activeStudentCount();
+       // int activeStudentCount=studentService.activeStudentCount();
         Schedule schedule= new Schedule();
         Course mpp=courseDao.findByCode("MPP400");
         Course fpp=courseDao.findByCode("FPP300");
+        List<String> basics=new ArrayList<>();
+        basics.add(mpp.getCode());
+        basics.add(fpp.getCode());
         List<Teacher> mppTeachers=new ArrayList<>(mpp.getTeachers());
         List<Teacher> fppTeachers=new ArrayList<>(fpp.getTeachers());
         for (int i = 0; i <blocks.size(); i++) {
@@ -92,7 +95,7 @@ public class ScheduleService {
                 int mppClazz=entry.getMppCount() / CAPACITY;
                 if(entry.getMppCount() % CAPACITY > CAPACITY/2)
                     mppClazz++;
-                List<Course> courses=courseDao.findAll();
+                List<Course> courses=courseDao.findByCodeNotIn(basics);
                 for (int j = 0; j < mppClazz; j++) {
                     Course course=courses.get(j);
                     Section section= new Section();
@@ -111,8 +114,8 @@ public class ScheduleService {
             }else{
                 int all=entry.getFppCount()+entry.getMppCount();
                 int clazz=all/CAPACITY;
-                if(all%CAPACITY > CAPACITY/2)clazz++;
-                List<Course> courses=courseDao.findAll();
+                if(all % CAPACITY > CAPACITY/2)clazz++;
+                List<Course> courses=courseDao.findByCodeNotIn(basics);
                 for (int j = 0; j < clazz; j++) {
                     Course course=courses.get(j);
                     Section section= new Section();
@@ -128,12 +131,41 @@ public class ScheduleService {
                     list.add(section);
                 }
             }
-
         }
-
-
         return list;
     }
 
 
+    public void save(Long id) {
+        if(entryDao.findByScheduleId(id)==null){
+            Entry entry=entryDao.getOne(id);
+            List<Section> sections=generate(entry);
+            Schedule schedule= new Schedule();
+            schedule.setUname(entry.getUname() + "Entry Schedule");
+            scheduleDao.save(schedule);
+            entry.setSchedule(schedule);
+            entryDao.save(entry);
+
+            for (Section section : sections)
+                section.setSchedule(schedule);
+            sectionDao.save(sections);
+        }
+    }
+
+    public List<Section> getSections(Long id) {
+        Entry entry=entryDao.findOne(id);
+        return getSections(entry);
+    }
+    public List<Section> getSections(Entry entry) {
+        List<Section> sections=new ArrayList<>();
+        entry=entryDao.findOne(entry.getId());
+        for (Block block : entry.getBlocks()) {
+            for (Section section : block.getSections()) {
+                if(section.getStudents().size()<25) {
+                    sections.add(section);
+                }
+            }
+        }
+        return sections;
+    }
 }

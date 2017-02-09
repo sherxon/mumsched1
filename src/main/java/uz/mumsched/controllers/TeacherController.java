@@ -25,10 +25,6 @@ public class TeacherController {
         return teacher;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public ModelAndView create(){
-        return new ModelAndView("teacher/create");
-    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(){
@@ -38,6 +34,11 @@ public class TeacherController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Teacher find(@PathVariable Long id){
         return teacherService.find(id);
+    }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public void delete(@PathVariable Long id){
+         teacherService.delete(id);
     }
 
 

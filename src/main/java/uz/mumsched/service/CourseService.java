@@ -25,4 +25,8 @@ public class CourseService {
     public Course find(Long id) {
         return courseDao.findOne(id);
     }
+
+    public void delete(Long id) {
+        courseDao.delete(id);
+    }
 }

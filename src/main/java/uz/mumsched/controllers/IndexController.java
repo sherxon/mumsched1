@@ -1,6 +1,7 @@
 package uz.mumsched.controllers;
 
 import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,8 +32,14 @@ public class IndexController implements ErrorController{
     }
 
     @RequestMapping(value = "/admin")
+    @PreAuthorize(value = "ADMIN")
     public ModelAndView indexAdmin(){
         return new ModelAndView("index");
+    }
+
+    @RequestMapping(value = "/student")
+    public ModelAndView indexUser(){
+        return new ModelAndView("student/index");
     }
 
     @RequestMapping(value = "/")

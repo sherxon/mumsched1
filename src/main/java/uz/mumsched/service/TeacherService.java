@@ -24,4 +24,8 @@ public class TeacherService {
     public void save(Teacher teacher) {
         teacherDao.save(teacher);
     }
+
+    public void delete(Long id) {
+        teacherDao.delete(id);
+    }
 }

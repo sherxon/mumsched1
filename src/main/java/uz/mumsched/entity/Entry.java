@@ -1,12 +1,17 @@
 package uz.mumsched.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by sherxon on 1/26/17.
  */
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Entry extends BaseEntity{
 
     @Column(unique =true, nullable = false)
@@ -20,10 +25,21 @@ public class Entry extends BaseEntity{
 
     private Integer optCount;
 
+    @OneToOne
+    private Schedule schedule;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "entry")
     @OrderBy(value = "uname")
-    private Set<Block> blocks;
+    @JsonBackReference
+    private Set<Block> blocks= new HashSet<>();
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
 
     public String getUname() {
         return uname;

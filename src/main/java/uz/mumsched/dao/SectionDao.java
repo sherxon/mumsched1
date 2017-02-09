@@ -12,4 +12,6 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface SectionDao extends JpaRepository<Section, Long>{
+
+    Iterable<Section> findByStudents_Id(Long id);
 }

@@ -1,7 +1,11 @@
 package uz.mumsched.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by sherxon on 1/25/17.
@@ -9,33 +13,60 @@ import javax.persistence.Entity;
 @Entity
 public class Student extends BaseEntity{
 
-    private String name;
+    @Column(nullable = false)
+    private String firstName;
 
-    @Column(nullable = true)
-    private boolean active=false;
+    private String lastName;
 
-    public Student() {
+    @ManyToMany
+    @JsonBackReference
+    @JoinTable(name = "student_section",
+            joinColumns = @JoinColumn(name = "section_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    Set<Section> sections= new HashSet<>();
+
+    private String email;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    Entry entry;
+
+    public Entry getEntry() {
+        return entry;
     }
 
-    public boolean isActive() {
-        return active;
+    public void setEntry(Entry entry) {
+        this.entry = entry;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public Set<Section> getSections() {
+        return sections;
     }
 
-    public Student(String name) {
-        this.name = name;
+    public void setSections(Set<Section> sections) {
+        this.sections = sections;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
 
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

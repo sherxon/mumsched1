@@ -29,6 +29,10 @@ public class CourseController {
     public Course find(@PathVariable Long id){
         return courseService.find(id);
     }
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public void delete(@PathVariable Long id){
+         courseService.delete(id);
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public ModelAndView create(){

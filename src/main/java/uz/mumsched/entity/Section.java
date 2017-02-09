@@ -1,9 +1,10 @@
 package uz.mumsched.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by sherxon on 1/30/17.
@@ -18,6 +19,7 @@ public class Section extends BaseEntity{
 
     @JoinColumn(name = "block_id")
     @ManyToOne
+    @JsonManagedReference
     private Block block;
 
     @JoinColumn(name = "course_id")
@@ -31,6 +33,18 @@ public class Section extends BaseEntity{
     @JoinColumn(name = "schedule_id")
     @ManyToOne
     private Schedule schedule;
+
+    @ManyToMany(mappedBy = "sections")
+    @JsonManagedReference
+    Set<Student> students= new HashSet<>();
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
+    }
 
     public String getUname() {
         return uname;

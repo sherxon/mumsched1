@@ -12,4 +12,5 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface EntryDao extends JpaRepository<Entry, Long>{
+    Entry findByScheduleId(Long id);
 }

@@ -38,69 +38,7 @@
 <div id="wrapper">
 
   <!-- Navigation -->
-  <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">Mum Sched</a>
-    </div>
-    <!-- /.navbar-header -->
-
-    <ul class="nav navbar-top-links navbar-right">
-
-      <!-- /.dropdown -->
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-        </a>
-        <ul class="dropdown-menu dropdown-user">
-          <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-          </li>
-          <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-          </li>
-          <li class="divider"></li>
-          <li><a href="/j_spring_security_logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-          </li>
-        </ul>
-        <!-- /.dropdown-user -->
-      </li>
-      <!-- /.dropdown -->
-    </ul>
-    <!-- /.navbar-top-links -->
-
-    <div class="navbar-default sidebar" role="navigation">
-      <div class="sidebar-nav navbar-collapse">
-        <ul class="nav" id="side-menu">
-          <li>
-            <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-          </li>
-          <li>
-            <a href="/course/"><i class="fa fa-dashboard fa-fw"></i> Courses</a>
-          </li>
-            <li>
-                <a href="/teacher/"><i class="fa fa-edit fa-fw"></i> Faculty</a>
-            </li>
-          <%--
-          <li>
-            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level">
-              <li>
-                <a href="panels-wells.html">Panels and Wells</a>
-              </li>
-            </ul>
-            <!-- /.nav-second-level -->
-          </li>--%>
-        </ul>
-      </div>
-      <!-- /.sidebar-collapse -->
-    </div>
-    <!-- /.navbar-static-side -->
-  </nav>
-
+    <%@ include file="../layout/left.jsp" %>
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-11">
@@ -117,7 +55,9 @@
               <div class="btn-group pull-right" style="margin: 5px">
                   <button id="update" class="btn btn-info">Update Course</button>
               </div>
-
+              <div class="btn-group pull-right" style="margin: 5px">
+                  <button id="delete" class="btn btn-danger">Delete Course</button>
+              </div>
           </div>
 
       </div>
@@ -183,7 +123,7 @@
                     <div class="form-group">
                         <label for="pre" class="control-label">Prerequisite</label>
                         <select name="pre" class="form-control" id="pre">
-                            <option>No Prerequisite</option>
+                            <option value="" >No Prerequisite</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -243,6 +183,24 @@
                 fillIn();
             }
         });
+        $('#delete').on('click', function() {
+            if($('.check:checked').length!=1){
+                alert('Please select one teacher');
+            }else{
+                var id=$('.check:checked').val();
+                $.ajax({
+                    url:'/course/delete/'+id,
+                    success: function (s) {
+                        console.log(s);
+                        loadCourses();
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        loadCourses
+                    }
+                })
+            }
+        });
 
         $('#save').on('click', function () {
             var da=$('#createc').serialize();
@@ -278,6 +236,7 @@
                 if(s.pre!=null)
                     $('#pre').val(s.pre.id);
                 if(s.teachers.length>0){
+                    //$('#teachers').html('');
                     var vals=[];
                     for(var key in s.teachers){
                         if(s.teachers.hasOwnProperty(key)){

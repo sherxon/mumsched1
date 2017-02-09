@@ -63,7 +63,7 @@
           <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
           </li>
           <li class="divider"></li>
-          <li><a href="/j_spring_security_logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+          <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
           </li>
         </ul>
         <!-- /.dropdown-user -->
@@ -71,33 +71,7 @@
       <!-- /.dropdown -->
     </ul>
     <!-- /.navbar-top-links -->
-
-    <div class="navbar-default sidebar" role="navigation">
-      <div class="sidebar-nav navbar-collapse">
-        <ul class="nav" id="side-menu">
-          <li>
-            <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-          </li>
-          <li>
-            <a href="/course/"><i class="fa fa-dashboard fa-fw"></i> Courses</a>
-          </li>
-            <li>
-                <a href="/teacher/"><i class="fa fa-edit fa-fw"></i> Faculty</a>
-            </li>
-          <%--
-          <li>
-            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level">
-              <li>
-                <a href="panels-wells.html">Panels and Wells</a>
-              </li>
-            </ul>
-            <!-- /.nav-second-level -->
-          </li>--%>
-        </ul>
-      </div>
-      <!-- /.sidebar-collapse -->
-    </div>
+      <%@ include file="../layout/left.jsp" %>
     <!-- /.navbar-static-side -->
   </nav>
 
@@ -116,6 +90,9 @@
               </div>
               <div class="btn-group pull-right" style="margin: 5px">
                   <button id="update" class="btn btn-info">Update Faculty</button>
+              </div>
+                <div class="btn-group pull-right" style="margin: 5px">
+                  <button id="delete" class="btn btn-danger">Delete Faculty</button>
               </div>
 
           </div>
@@ -224,6 +201,23 @@
             }else{
                 $('#createModal').modal('show');
                 fillIn();
+            }
+        });
+        $('#delete').on('click', function() {
+            if($('.check:checked').length!=1){
+                alert('Please select one teacher');
+            }else{
+                var id=$('.check:checked').val();
+                $.ajax({
+                    url:'/teacher/delete/'+id,
+                    success: function (s) {
+                        console.log(s);
+                        loadTeachers();
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                })
             }
         });
 
